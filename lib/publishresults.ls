@@ -1,8 +1,7 @@
 #!/usr/bin/env lsc
 
 require! 'express'
-require! 'jsdom'
-$ = require('jquery')(jsdom.jsdom().parentWindow)
+$ = require 'cheerio'
 {spawn} = require 'child_process'
 CBuffer = require 'CBuffer'
 
@@ -46,9 +45,9 @@ export publishresults = ->
       for line in lines
         switch type
         | 'stdout' =>
-          output.append $('<div>').append [$('<div>').css({background-color: '#BFD2FF', margin-right: '5px', display: 'inline-block'}).text(new Date(time).toString()), $('<div>').css({display: 'inline-block'}).text(line)]
+          output.append $('<div>').append [$('<div>').css({'background-color': '#BFD2FF', 'margin-right': '5px', 'display': 'inline-block'}).text(new Date(time).toString()), $('<div>').css({'display': 'inline-block'}).text(line)]
         | 'stderr' =>
-          output.append $('<div>').append [$('<div>').css({background-color: '#BFD2FF', margin-right: '5px', display: 'inline-block'}).text(new Date(time).toString()), $('<span>').css({display: 'inline-block', background-color: 'yellow'}).text(line)]
+          output.append $('<div>').append [$('<div>').css({'background-color': '#BFD2FF', 'margin-right': '5px', 'display': 'inline-block'}).text(new Date(time).toString()), $('<span>').css({'display': 'inline-block', 'background-color': 'yellow'}).text(line)]
     return '<html><head><meta charset="UTF-8"></head><body>' + output.html() + '</body></html>'
 
   app.get '/', (req, res) ->
