@@ -4,6 +4,7 @@ require! 'express'
 require! 'jsdom'
 $ = require('jquery')(jsdom.jsdom().parentWindow)
 {spawn} = require 'child_process'
+CBuffer = require 'CBuffer'
 
 export publishresults = ->
   if not process.argv[2]? or process.argv[2].toString() == ''
@@ -11,7 +12,7 @@ export publishresults = ->
     return
   cmd = spawn 'bash', [ '-c', process.argv[2] ]
 
-  messages = []
+  messages = new CBuffer(1000)
 
   cmd.stdout.on 'data', (data) ->
     nd = data.toString()
@@ -36,7 +37,9 @@ export publishresults = ->
 
   messages_to_html = ->
     output = $('<div>')
-    for {type, text, time} in messages
+    #for {type, text, time} in messages
+    messages.forEach (msgelem) ->
+      {type, text, time} = msgelem
       lines = text.split('\n')
       if lines[*-1] == ''
         lines = lines[til -1]
