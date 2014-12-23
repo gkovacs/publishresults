@@ -1,6 +1,7 @@
 #!/usr/bin/env lsc
 
 require! 'express'
+require! 'path'
 $ = require 'cheerio'
 {spawn} = require 'child_process'
 CBuffer = require 'CBuffer'
@@ -12,15 +13,18 @@ export publishresults = ->
   cmd = spawn 'bash', [ '-c', process.argv[2] ]
 
   messages = new CBuffer(1000)
+  curidx = 0
 
   cmd.stdout.on 'data', (data) ->
     nd = data.toString()
-    messages.push {type: 'stdout', text: nd, time: Date.now()}
+    messages.push {type: 'stdout', text: nd, time: Date.now(), idx: curidx}
+    curidx := curidx + 1
     process.stdout.write nd
 
   cmd.stderr.on 'data', (data) ->
     nd = data.toString()
-    messages.push {type: 'stderr', text: nd, time: Date.now()}
+    messages.push {type: 'stderr', text: nd, time: Date.now(), idx: curidx}
+    curidx := curidx + 1
     process.stdout.write nd
 
   app = express()
@@ -32,24 +36,34 @@ export publishresults = ->
     catch
       continue
 
-  console.log 'listening on port: ' + portnum
-
-  messages_to_html = ->
-    output = $('<div>')
-    #for {type, text, time} in messages
-    messages.forEach (msgelem) ->
-      {type, text, time} = msgelem
-      lines = text.split('\n')
-      if lines[*-1] == ''
-        lines = lines[til -1]
-      for line in lines
-        switch type
-        | 'stdout' =>
-          output.append $('<div>').append [$('<div>').css({'background-color': '#BFD2FF', 'margin-right': '5px', 'display': 'inline-block'}).text(new Date(time).toString()), $('<div>').css({'display': 'inline-block'}).text(line)]
-        | 'stderr' =>
-          output.append $('<div>').append [$('<div>').css({'background-color': '#BFD2FF', 'margin-right': '5px', 'display': 'inline-block'}).text(new Date(time).toString()), $('<span>').css({'display': 'inline-block', 'background-color': 'yellow'}).text(line)]
-    return '<html><head><meta charset="UTF-8"></head><body>' + output.html() + '</body></html>'
+  console.log 'visit the following url in your browser: http://localhost:' + portnum
 
   app.get '/', (req, res) ->
     res.content-type 'text/html'
-    res.send messages_to_html()
+    res.send '''
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"></head>
+    <body>
+    <script src="jquery-1.11.1.min.js"></script>
+    <script src="webindex.js"></script>
+    <div id="messages"></div>
+    </body>
+    </html>
+    '''
+
+  app.get '/messages', (req, res) ->
+    output = []
+    minidx = 0
+    if req.query.idx?
+      minidx = parseInt req.query.idx
+    messages.forEach (msgelem) ->
+      if msgelem.idx >= minidx
+        output.push msgelem
+    res.send JSON.stringify output
+
+  app.get '/jquery-1.11.1.min.js', (req, res) ->
+    res.sendFile path.join(__dirname, 'jquery-1.11.1.min.js')
+
+  app.get '/webindex.js', (req, res) ->
+    res.sendFile path.join(__dirname, 'webindex.js')
