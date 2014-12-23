@@ -1,11 +1,10 @@
 {
   "name": "publishresults",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Publishes results of a script run on a port",
   "main": "./bin/publishresults",
   "dependencies": {
     "CBuffer": "^1.1.0",
-    "cheerio": "^0.18.0",
     "express": "^4.10.6"
   },
   "devDependencies": {

@@ -2,7 +2,6 @@
 
 require! 'express'
 require! 'path'
-$ = require 'cheerio'
 {spawn} = require 'child_process'
 CBuffer = require 'CBuffer'
 
