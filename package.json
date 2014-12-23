@@ -1,0 +1,34 @@
+{
+  "name": "publishresults",
+  "version": "1.0.0",
+  "description": "Publishes results of a script run on a port",
+  "main": "./bin/publishresults",
+  "dependencies": {
+    "jsdom": "^1.5.0",
+    "express": "^4.10.6",
+    "jquery": "^2.1.3"
+  },
+  "devDependencies": {
+    "LiveScript": "^1.3.1"
+  },
+  "bin": {
+    "publishresults": "./bin/publishresults"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gkovacs/publishresults.git"
+  },
+  "keywords": [
+    "script",
+    "command"
+  ],
+  "author": "Geza Kovacs (http://github.com/gkovacs)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gkovacs/publishresults/issues"
+  },
+  "homepage": "https://github.com/gkovacs/publishresults"
+}
