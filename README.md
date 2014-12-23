@@ -10,7 +10,7 @@ Takes the output of a command, and serves it on a page.
 
 Run the following command:
 
-    publishresults 'while true; do echo "foo"; done'
+    publishresults 'while true; do date; sleep 1; done'
 
 It will show you the output on the command line, and will also give you a port. Visit http://localhost:9000 (or wherever it is running), and you will also see the output there.
 
