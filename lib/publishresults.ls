@@ -25,7 +25,7 @@ export publishresults = ->
 
   app = express()
 
-  for portnum from 9000 to Infinity
+  for portnum from 9876 to Infinity
     try
       app.listen portnum, '0.0.0.0'
       break
