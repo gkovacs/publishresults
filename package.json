@@ -1,6 +1,6 @@
 {
   "name": "publishresults",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Publishes results of a script run on a port",
   "main": "./bin/publishresults",
   "dependencies": {
