@@ -15,12 +15,12 @@ export publishresults = ->
 
   cmd.stdout.on 'data', (data) ->
     nd = data.toString()
-    messages.push {type: 'stdout', text: nd}
+    messages.push {type: 'stdout', text: nd, time: Date.now()}
     process.stdout.write nd
 
   cmd.stderr.on 'data', (data) ->
     nd = data.toString()
-    messages.push {type: 'stderr', text: nd}
+    messages.push {type: 'stderr', text: nd, time: Date.now()}
     process.stdout.write nd
 
   app = express()
@@ -36,13 +36,16 @@ export publishresults = ->
 
   messages_to_html = ->
     output = $('<div>')
-    for {type, text} in messages
-      for line in text.split('\n')
+    for {type, text, time} in messages
+      lines = text.split('\n')
+      if lines[*-1] == ''
+        lines = lines[til -1]
+      for line in lines
         switch type
         | 'stdout' =>
-          output.append $('<div>').text(line)
+          output.append $('<div>').append [$('<div>').css({background-color: '#BFD2FF', margin-right: '5px', display: 'inline-block'}).text(new Date(time).toString()), $('<div>').css({display: 'inline-block'}).text(line)]
         | 'stderr' =>
-          output.append $('<div>').css('background-color', 'yellow').text(line)
+          output.append $('<div>').append [$('<div>').css({background-color: '#BFD2FF', margin-right: '5px', display: 'inline-block'}).text(new Date(time).toString()), $('<span>').css({display: 'inline-block', background-color: 'yellow'}).text(line)]
     return '<html><head><meta charset="UTF-8"></head><body>' + output.html() + '</body></html>'
 
   app.get '/', (req, res) ->
